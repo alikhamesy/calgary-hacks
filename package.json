@@ -1,0 +1,24 @@
+{
+  "name": "calgary-hacks",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node_modules/.bin/concurrently \"npm start --prefix ./server\" \"npm start --prefix ./client\"",
+    "setup": "npm install && npm install --prefix ./server/node_modules server && npm install --prefix ./client/node_modules client"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alikhamesy/calgary-hacks.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alikhamesy/calgary-hacks/issues"
+  },
+  "homepage": "https://github.com/alikhamesy/calgary-hacks#readme",
+  "devDependencies": {
+    "concurrently": "^5.3.0"
+  }
+}
