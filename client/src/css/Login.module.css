@@ -1,0 +1,40 @@
+.container {
+  background: center no-repeat url('../assets/splash.png');
+  height: 100%;
+  width: 100%;
+}
+
+.form {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+}
+
+.form img {
+}
+
+.input {
+  background: rgba(201, 143, 145, 0.5);
+  border: 1px solid black;
+  font: Poppins;
+  height: 60px;
+  font-size: 24px;
+  padding-left: 20px;
+}
+
+.form label {
+  font-size: 36px;
+}
+
+.btn {
+  background: rgba(201, 143, 145, 0.24);
+  height: 80px;
+  width: 500px;
+  font-size: 36px;
+  font-family: Poppins;
+  margin-top: 51px;
+  cursor: pointer;
+}

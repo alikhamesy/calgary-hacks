@@ -1,6 +1,6 @@
 /*global google*/
 import React, { useState, useRef, useEffect } from 'react'
-import { move } from '../utils/socket'
+import { move, roomRequest } from '../utils/socket'
 
 import Marker from '../components/Marker'
 
@@ -15,28 +15,22 @@ const Map = ({ users, user, center = defaultCenter }) => {
   const [map, setMap] = useState(null)
   const [currLoc, setLoc] = useState(user?.loc)
 
-  console.log(users)
-
-  const onClick = id => {
-    console.log(id)
+  const onClick = uid => {
+    roomRequest(uid)
   }
 
   const keyDownHandler = e => {
     switch (e.keyCode) {
       case 37:
-        console.log('left key')
         setLoc({ lat: currLoc.lat, lng: currLoc.lng - dlng })
         break
       case 38:
-        console.log('up key')
         setLoc({ lat: currLoc.lat + dlat, lng: currLoc.lng })
         break
       case 39:
-        console.log('right key')
         setLoc({ lat: currLoc.lat, lng: currLoc.lng + dlng })
         break
       case 40:
-        console.log('down key')
         setLoc({ lat: currLoc.lat - dlat, lng: currLoc.lng })
         break
       default:
@@ -46,9 +40,10 @@ const Map = ({ users, user, center = defaultCenter }) => {
   useEffect(() => {
     setMap(
       new google.maps.Map(mapDomRef.current, {
-        zoom: 11,
-        center: defaultCenter,
-        keyboardShortcuts: false
+        zoom: 17,
+        center: user?.loc ?? defaultCenter,
+        keyboardShortcuts: false,
+        disableDefaultUI: true
       })
     )
   }, [])
@@ -68,24 +63,31 @@ const Map = ({ users, user, center = defaultCenter }) => {
 
   useEffect(() => {
     setLoc(user?.loc)
-  }, [user?.loc])
+    map && user?.loc && map.setCenter(user?.loc)
+  }, [user, user?.loc])
 
   return (
     <div ref={mapDomRef} className={styles.map}>
       {currLoc && (
         <Marker
+          {...user}
           map={map}
           onClick={onClick}
           loc={currLoc}
           username={user.username}
-          id="123"
-          name="test123"
         />
       )}
       {users &&
         Object.entries(users)?.map?.(([uid, user]) => {
           return (
-            <Marker key={uid} map={map} onClick={onClick} name="hi" {...user} />
+            <Marker
+              key={uid}
+              uid={uid}
+              map={map}
+              onClick={onClick}
+              name="hi"
+              {...user}
+            />
           )
         })}
     </div>

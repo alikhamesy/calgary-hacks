@@ -1,8 +1,9 @@
 .marker {
-  background-color: white;
+  background: rgba(201, 143, 145, 0.5);
   color: black;
   padding: 5px;
   border-radius: 10px;
+  border: 2px solid #eb5757;
   min-width: 30px;
 }
 

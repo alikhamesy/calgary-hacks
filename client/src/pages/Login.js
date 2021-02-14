@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import fetcher from '../utils/fetcher'
-
 import { useHistory } from 'react-router-dom'
+
+import styles from '../css/Login.module.css'
+
+import logoSrc from '../assets/logo.svg'
 
 const Login = () => {
   const hist = useHistory()
@@ -27,13 +30,21 @@ const Login = () => {
   }
 
   return (
-    <div>
-      <form onSubmit={login}>
-        <label>Username</label>
-        <input onChange={e => setUser(e.target.value)} />
+    <div className={styles.container}>
+      <form className={styles.form} onSubmit={login}>
+        <img src={logoSrc} alt="" />
+        <label>Email</label>
+        <input
+          className={styles.input}
+          onChange={e => setUser(e.target.value)}
+        />
         <label>Password</label>
-        <input onChange={e => setPass(e.target.value)} type="password" />
-        <input value="Login" type="submit" />
+        <input
+          className={styles.input}
+          onChange={e => setPass(e.target.value)}
+          type="password"
+        />
+        <input className={styles.btn} value="Login" type="submit" />
       </form>
     </div>
   )

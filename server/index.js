@@ -27,24 +27,15 @@ app.use('*', (req, res, next) => {
 })
 app.use(cors())
 
-const dbschema = {
-  auth: {
-    username: 'uid'
-  },
-  users: {
-    uid: {
-      loc: {
-        lat: 0,
-        lng: 0
-      },
-      username: ''
-    }
-  }
-}
-
 const db = {
   auth: {},
-  users: {}
+  users: {},
+  rooms: []
+}
+
+const userMap = {
+  'akhamesy@sfu.ca': 'Ali Khamesy',
+  'noblet@sfu.ca': 'Noble Tan'
 }
 
 const uniRegex = /(?<=@).+?(?=\.ca)/
@@ -52,6 +43,26 @@ const uniMap = {
   sfu: {
     lat: 49.278256968386984,
     lng: -122.91998964252502
+  },
+  'mail.utoronto': {
+    lat: 43.66291496330409,
+    lng: -79.39566713073361
+  },
+  'student.ubc': {
+    lat: 49.26061218117882,
+    lng: -123.24598307292231
+  },
+  uwaterloo: {
+    lat: 43.47232430908821,
+    lng: -80.5447932288918
+  },
+  ualberta: {
+    lat: 53.52321775834021,
+    lng: -113.52632704545402
+  },
+  ucalgary: {
+    lat: 51.077624482445465,
+    lng: -114.14070573054364
   }
 }
 
@@ -67,7 +78,7 @@ app.post('/login', (req, res) => {
   const uid = uuidv4()
 
   db.auth[username] = uid
-  db.users[uid] = { loc, username }
+  db.users[uid] = { loc, username, displayName: userMap[username] }
 
   res.json({ uid })
 })
@@ -84,9 +95,12 @@ app.get('/users', (req, res) => {
   })
   res.json({
     user,
-    others
+    others,
+    rooms: db.rooms
   })
 })
+
+let roomid = 0
 
 io.on('connection', socket => {
   socket.on('join', cookie => {
@@ -97,11 +111,48 @@ io.on('connection', socket => {
   })
 
   socket.on('move', ({ uid, newLoc }) => {
-    console.log(`got move for ${uid}`)
-    if (newLoc && uid) {
+    if (newLoc && uid && db.users[uid]) {
       db.users[uid].loc = newLoc
       socket.broadcast.emit('move', { uid, user: db.users[uid] })
     }
+  })
+
+  socket.on('message', ({ message, room, username }) => {
+    socket.broadcast.emit('message', { message, room, username })
+    socket.emit('message', { message, room, username })
+  })
+
+  socket.on('drawing', ({ room, tokens, wid, color }) => {
+    socket.broadcast.emit('drawing', { room, tokens, wid, color })
+  })
+
+  socket.on('clear', room => {
+    socket.broadcast.emit('clear', room)
+    socket.emit('clear', room)
+  })
+
+  socket.on('newRoom', room => {
+    if (db.rooms.includes(room)) return
+    db.rooms.push(room)
+    socket.broadcast.emit('newRoom', room)
+    socket.emit('newRoom', room)
+  })
+
+  socket.on('roomRequest', ({ requester, invited }) => {
+    socket.broadcast.emit('roomRequest', { requester, invited })
+  })
+
+  socket.on('acceptRoom', ({ requester, invited }) => {
+    const room = `R-${roomid++}`
+    db.rooms.push(room)
+    socket.broadcast.emit('acceptRoom', {
+      room,
+      pair: [requester, invited]
+    })
+    socket.emit('acceptRoom', {
+      room,
+      pair: [requester, invited]
+    })
   })
 
   // socket.on('newLine')

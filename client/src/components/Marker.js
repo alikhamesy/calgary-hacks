@@ -10,15 +10,15 @@ const infowindow = new google.maps.InfoWindow({
   content: ''
 })
 
-const Marker = ({ map, loc, onClick, ...props }) => {
-  const { id, name, imgSrc, username } = props
+const Marker = ({ map, loc, uid, onClick, ...props }) => {
+  const { id, name, imgSrc, username, displayName } = props
 
   const [marker, setMarker] = useState(null)
 
   const info = ReactDOMServer.renderToString(
     <div className={styles.container}>
-      <h3 className={styles.name}>{name}</h3>
-      <img src={imgSrc ?? defaultImg} alt="" />
+      <h3 className={styles.name}>{displayName}</h3>
+      {/* <img src={imgSrc ?? defaultImg} alt="" /> */}
     </div>
   )
 
@@ -26,11 +26,12 @@ const Marker = ({ map, loc, onClick, ...props }) => {
     if (!map) return
 
     const _marker = new google.maps.Marker({
-      id,
+      username,
+      uid,
       map,
       position: loc,
       label: {
-        text: `${username}`,
+        text: `${displayName}`,
         className: styles.marker
       },
       info,
@@ -51,18 +52,21 @@ const Marker = ({ map, loc, onClick, ...props }) => {
 
   useEffect(() => {
     const clickHandler = function () {
-      infowindow.close()
-      infowindow.setContent(this.info)
-      infowindow.open(map, this)
-      onClick(this.id)
+      // infowindow.close()
+      // infowindow.setContent(this.info)
+      // infowindow.open(map, this)
+      onClick(this.uid)
     }
+    let l
+    if (marker) l = google.maps.event.addListener(marker, 'click', clickHandler)
 
-    if (marker) google.maps.event.addListener(marker, 'click', clickHandler)
+    return () => {
+      l && google.maps.event.removeListener(l)
+    }
   }, [marker, map, onClick])
 
   useEffect(() => {
-    console.log('moving', loc)
-    marker?.setPosition(loc)
+    loc && marker?.setPosition(loc)
   }, [marker, loc])
 
   return null
