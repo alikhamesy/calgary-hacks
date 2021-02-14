@@ -1,0 +1,25 @@
+.marker {
+  background-color: white;
+  color: black;
+  padding: 5px;
+  border-radius: 10px;
+  min-width: 30px;
+}
+
+.container * {
+  color: black;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.name {
+  font-weight: bold;
+}
+
+.address {
+  margin-top: 0;
+}
+
+.address1 {
+  margin-bottom: 0;
+}
