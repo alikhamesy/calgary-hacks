@@ -11,7 +11,7 @@ const infowindow = new google.maps.InfoWindow({
 })
 
 const Marker = ({ map, loc, onClick, ...props }) => {
-  const { id, name, imgSrc } = props
+  const { id, name, imgSrc, username } = props
 
   const [marker, setMarker] = useState(null)
 
@@ -30,7 +30,7 @@ const Marker = ({ map, loc, onClick, ...props }) => {
       map,
       position: loc,
       label: {
-        text: `${name}`,
+        text: `${username}`,
         className: styles.marker
       },
       info,
@@ -61,6 +61,7 @@ const Marker = ({ map, loc, onClick, ...props }) => {
   }, [marker, map, onClick])
 
   useEffect(() => {
+    console.log('moving', loc)
     marker?.setPosition(loc)
   }, [marker, loc])
 

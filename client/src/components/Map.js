@@ -13,12 +13,14 @@ const dlng = 0.001
 const Map = ({ users, user, center = defaultCenter }) => {
   const mapDomRef = useRef(null)
   const [map, setMap] = useState(null)
-  const [currLoc, setLoc] = useState(center)
+  const [currLoc, setLoc] = useState(user?.loc)
+
+  console.log(users)
 
   const onClick = id => {
     console.log(id)
   }
-  console.log(currLoc)
+
   const keyDownHandler = e => {
     switch (e.keyCode) {
       case 37:
@@ -64,18 +66,28 @@ const Map = ({ users, user, center = defaultCenter }) => {
     move(currLoc)
   }, [currLoc])
 
+  useEffect(() => {
+    setLoc(user?.loc)
+  }, [user?.loc])
+
   return (
     <div ref={mapDomRef} className={styles.map}>
-      <Marker
-        map={map}
-        onClick={onClick}
-        loc={currLoc}
-        id="123"
-        name="test123"
-      />
-      {/* {users?.map?.(user => (
-        <Marker key={user.id} map={map} onClick={onClick} {...user} />
-      ))} */}
+      {currLoc && (
+        <Marker
+          map={map}
+          onClick={onClick}
+          loc={currLoc}
+          username={user.username}
+          id="123"
+          name="test123"
+        />
+      )}
+      {users &&
+        Object.entries(users)?.map?.(([uid, user]) => {
+          return (
+            <Marker key={uid} map={map} onClick={onClick} name="hi" {...user} />
+          )
+        })}
     </div>
   )
 }
