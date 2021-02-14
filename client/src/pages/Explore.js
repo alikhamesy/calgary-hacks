@@ -120,7 +120,7 @@ const Explore = props => {
 
     socket.on('acceptRoom', ({ room: newRoom, pair }) => {
       if (pair.includes(localStorage.uid)) {
-        setRooms([...rooms, room])
+        setRooms([...rooms, newRoom])
         setRoom(newRoom)
       }
     })
@@ -170,7 +170,7 @@ const Explore = props => {
         <div className={styles.bot}>
           <div className={styles.prof}>
             <img src={profileSrc} className={styles.profile} alt="" />
-            <p className={styles.name}>Name</p>
+            <p className={styles.name}>{user.displayName ?? 'Ali'}</p>
           </div>
           <Link className={styles.out} to="/">
             Logout

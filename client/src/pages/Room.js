@@ -197,8 +197,6 @@ const Room = ({ roomName, username }) => {
     if (chat) chat.scrollTo(0, chat.scrollHeight)
   }, [messages])
 
-  console.log(toolsarr)
-
   const toolSelect = tool => {
     switch (tool) {
       case 'Pencil':
